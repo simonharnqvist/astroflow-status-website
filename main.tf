@@ -34,9 +34,10 @@ resource "google_storage_bucket_iam_member" "public_read" {
 
 # ---------- Outputs ----------
 
-output "load_balancer_ip" {
-  description = "Give this IP to admin for the reverse proxy"
-  value       = google_compute_global_address.static_site.address
+
+output "bucket_url" {
+  description = "Give this to admin for the reverse proxy"
+  value       = "https://storage.googleapis.com/${google_storage_bucket.static_site.name}"
 }
 
 output "bucket_name" {
