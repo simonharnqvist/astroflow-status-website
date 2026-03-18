@@ -26,11 +26,21 @@ resource "google_storage_bucket" "static_site" {
   }
 }
 
-resource "google_storage_bucket_iam_member" "public_read" {
-  bucket = google_storage_bucket.static_site.name
-  role   = "roles/storage.objectViewer"
-  member = "allUsers"
+resource "google_service_account" "cloudflare_origin" {
+  account_id = "cloudflare-origin"
+  display_name = "Cloudflare Origin Access"
 }
+
+resource "google_storage_bucket_iam_member" "origin_access" {
+  bucket = google_service_account.static_site.name
+  role = "roles/storage.objectViewer"
+  member = "serviceAccount:${google_service_account.cloudflare_origin.email}"
+}
+
+resource "google_service_account_key" "cloudflare_origin_key" {
+  service_account_id = google_service_account.cloudflare_origin.name
+}
+
 
 # ---------- Outputs ----------
 
