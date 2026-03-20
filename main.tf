@@ -16,7 +16,7 @@ resource "google_storage_bucket" "static_site" {
   name                        = "${var.project_id}-status-site"
   location                    = "europe-west1"
   force_destroy               = true
-  uniform_bucket_level_access = true
+  #uniform_bucket_level_access = true
 
   website {
     main_page_suffix = "index.html"
@@ -50,11 +50,6 @@ resource "google_storage_bucket_iam_member" "public_read" {
   bucket = google_storage_bucket.static_site.name
   role   = "roles/storage.objectViewer"
   member = "allUsers"
-}
-
-output "bucket_url" {
-  description = "Give this to admin for the reverse proxy"
-  value       = "https://storage.googleapis.com/${google_storage_bucket.static_site.name}"
 }
 
 output "bucket_name" {
