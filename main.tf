@@ -9,14 +9,12 @@ terraform {
 
 provider "google" {
   project = var.project_id
-  region  = "eu-west2"
+  region  = "europe-west1"
 }
-
-# ---------- Storage ----------
 
 resource "google_storage_bucket" "static_site" {
   name                        = "${var.project_id}-status-site"
-  location                    = "EU"
+  location                    = "europe-west1"
   force_destroy               = true
   uniform_bucket_level_access = true
 
@@ -26,14 +24,30 @@ resource "google_storage_bucket" "static_site" {
   }
 }
 
+resource "google_storage_bucket_object" "index_html" {
+  bucket = google_storage_bucket.static_site.name
+  name = "index.html"
+  source = "./index.html"
+}
+
+resource "google_storage_bucket_object" "js" {
+  bucket = google_storage_bucket.static_site.name
+  name = "status.js"
+  source = "./status.js"
+}
+
+resource "google_storage_bucket_object" "css" {
+  bucket = google_storage_bucket.static_site.name
+  name = "styles.css"
+  source = "./styles.css"
+}
+
+
 resource "google_storage_bucket_iam_member" "public_read" {
   bucket = google_storage_bucket.static_site.name
   role   = "roles/storage.objectViewer"
   member = "allUsers"
 }
-
-# ---------- Outputs ----------
-
 
 output "bucket_url" {
   description = "Give this to admin for the reverse proxy"
