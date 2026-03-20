@@ -71,7 +71,7 @@ async function init() {
 }
 
 async function loadConfig() {
-  const res = await fetch('/config/status-config.json', { cache: 'no-store' });
+  const res = await fetch('urls.json', { cache: 'no-store' });
   return res.json();
 }
 
