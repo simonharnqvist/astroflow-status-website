@@ -77,3 +77,21 @@ h1 {
 .border-error {
   border-color: #f39c12;
 }
+
+.icon.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.badge.checking {
+  background: #bdc3c7;
+  color: white;
+}
+
+.border-checking {
+  border-left: 4px solid #bdc3c7;
+}
