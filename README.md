@@ -7,7 +7,7 @@ URLs are defined in a shared config file.
 
 ## Structure
 ```
-project/
+status.astro-flow.com/
 │
 ├── backend/
 │   └── server.py        # FastAPI app + static serving
@@ -24,14 +24,29 @@ project/
 ## Configuration
 
 Edit config/urls.json to change which domains are checked:
+```
+{
+  "urls": [
+    "https://portal.scorpio.astro-flow.com",
+    "https://portal.aquarius.astro-flow.com",
+    "https://portal.sagittarius.astro-flow.com",
+    "https://portal.capricorn.astro-flow.com"
+  ]
+}
+
+```
+
+## Build
+```bash
+docker build . -t astroflowstatus
+```
 
 ## Running
 
-From the backend/ directory:
-
+Run through Docker:
 
 ```bash
-uvicorn server:app --reload --port 8000
+docker run -p 8000:8000 astroflowstatus
 ```
 
 Then open `http://localhost:8000/`
