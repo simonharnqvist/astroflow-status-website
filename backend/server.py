@@ -2,26 +2,24 @@ import json
 import asyncio
 import httpx
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-
+import uvicorn
 
 app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
-
+# -----------------------------
+# Load URLs from shared config
+# -----------------------------
 def load_urls():
     with open("../config/urls.json") as f:
         return json.load(f)["urls"]
 
 
+# -----------------------------
+# Check a single URL
+# -----------------------------
 async def check_single_url(url: str):
     try:
         async with httpx.AsyncClient(timeout=1.5) as client:
@@ -34,6 +32,9 @@ async def check_single_url(url: str):
         return {"url": url, "status": "offline", "code": None}
 
 
+# -----------------------------
+# API endpoint
+# -----------------------------
 @app.get("/status")
 async def status():
     urls = load_urls()
@@ -42,17 +43,25 @@ async def status():
     return {"urls": urls, "results": results}
 
 
+# -----------------------------
+# Serve shared config
+# -----------------------------
 app.mount("/config", StaticFiles(directory="../config"), name="config")
 
-# Serve the frontend folder
+
+# -----------------------------
+# Serve frontend
+# -----------------------------
 app.mount("/static", StaticFiles(directory="../frontend"), name="static")
 
 
-# Serve index.html at root
 @app.get("/")
 def root():
     return FileResponse("../frontend/index.html")
 
 
-# Serve config folder
-app.mount("/config", StaticFiles(directory="../config"), name="config")
+# -----------------------------
+# Run server
+# -----------------------------
+if __name__ == "__main__":
+    uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=True)
